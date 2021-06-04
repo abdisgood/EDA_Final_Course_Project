@@ -8,6 +8,9 @@ library (dplyr)
 library (ggplot2)
 library (RColorBrewer)
 library (grDevices)
+library (scales)
+library (ggpubr)
+
 URL<- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2FNEI_data.zip"
 download.file(URL, "./data.zip")
 unzip ("./data.zip")
@@ -25,7 +28,7 @@ data_coal <- data.frame(data_coal%>%
                         mutate("Annual_Emissions" = sum(Emissions)
                                ))
                         
-cols <- brewer.pal(11, "RdBu")
+cols <- c("red","blue")
 pal <- colorRampPalette(cols)
 
 My_Theme = theme_bw() + theme(
@@ -36,23 +39,33 @@ My_Theme = theme_bw() + theme(
                                     face="bold"),
         title = element_text (size=16, face="bold"))
 
-g <- ggplot(data_coal, aes(x =fips)) + 
+g1 <- ggplot(data_coal, aes(x =fips)) + 
         My_Theme +
         facet_wrap(~year, ncol = 4) +
         geom_hline (aes(yintercept=Annual_Emissions,
-                        col="red",
-                        lwd = 2),
+                        col=-Annual_Emissions,
+                        lwd = 0.5),
                         show.legend = F)+
+        labs (y = "Emissions" ) +
+        theme (axis.text.x = element_blank(),
+               axis.title.x = element_blank())+
+        scale_y_continuous(labels = unit_format(unit="M", scale = 1e-6)) +
+        labs (title = "Total coal combusion emissions across 
+              United States (TPA")
+ 
+g2 <- ggplot(data_coal, aes(x =fips)) + 
+        My_Theme +
+        facet_wrap(~year, ncol = 4) +
         geom_point (aes(y=Emissions, 
-                        col= "steelblue",
+                        col= -Emissions,
                         size=1,
+                        shape = ".",
                         alpha = 1/2), show.legend=F) +
-        labs (x = "US County Code") +
-        labs (title = "Total coal combusion emissions across United States")
-        
-
-windows ()
-print (g)
+        labs (x = "County") +
+        theme (axis.title.y = element_text(color ="white")) +
+        scale_y_continuous(labels = unit_format(unit="K", scale = 1e-3))
+windows ()        
+gridExtra::grid.arrange (g1,g2)
 
 dev.copy (png, "plot4.png", width = 1024, height = 768)
 dev.off()
