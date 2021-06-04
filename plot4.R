@@ -22,7 +22,7 @@ coal_code <- SCC[coal_cat,1]
 data_coal <- data.frame(filter(NEI,SCC %in% coal_code))
 data_coal <- data.frame(data_coal%>%
                         group_by(year)%>%
-                        mutate("Annual_Mean" = mean(Emissions)
+                        mutate("Annual_Emissions" = sum(Emissions)
                                ))
                         
 cols <- brewer.pal(11, "RdBu")
@@ -39,14 +39,14 @@ My_Theme = theme_bw() + theme(
 g <- ggplot(data_coal, aes(x =fips)) + 
         My_Theme +
         facet_wrap(~year, ncol = 4) +
+        geom_hline (aes(yintercept=Annual_Emissions,
+                        col="red",
+                        lwd = 2),
+                        show.legend = F)+
         geom_point (aes(y=Emissions, 
                         col= "steelblue",
                         size=1,
                         alpha = 1/2), show.legend=F) +
-        geom_hline (aes(yintercept=Annual_Mean,
-                        col="red",
-                        lwd = 1),
-                    show.legend = F)+
         labs (x = "US County Code") +
         labs (title = "Total coal combusion emissions across United States")
         
