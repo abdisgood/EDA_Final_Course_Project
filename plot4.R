@@ -48,9 +48,8 @@ g1 <- ggplot(data_coal, aes(x =fips)) +
         labs (y = "Emissions" ) +
         theme (axis.text.x = element_blank(),
                axis.title.x = element_blank())+
-        scale_y_continuous(labels = unit_format(unit="M", scale = 1e-6)) +
-        labs (title = "Total coal combusion emissions across 
-              United States (TPA")
+        scale_y_continuous(labels = unit_format(unit="K", scale = 1e-3)) +
+        labs (title = "Total coal combusion emissions across United States (TPA)")
  
 g2 <- ggplot(data_coal, aes(x =fips)) + 
         My_Theme +
@@ -60,9 +59,10 @@ g2 <- ggplot(data_coal, aes(x =fips)) +
                         size=1,
                         shape = ".",
                         alpha = 1/2), show.legend=F) +
-        labs (x = "County") +
+        labs (x = "County (by fips code)") +
         theme (axis.title.y = element_text(color ="white")) +
         scale_y_continuous(labels = unit_format(unit="K", scale = 1e-3))
+
 windows ()        
 gridExtra::grid.arrange (g1,g2)
 
