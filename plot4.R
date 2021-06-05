@@ -28,8 +28,7 @@ data_coal <- data.frame(data_coal%>%
                         mutate("Annual_Emissions" = sum(Emissions)
                                ))
                         
-cols <- c("red","blue")
-pal <- colorRampPalette(cols)
+cols <- brewer.pal(4,Pastel1)
 
 My_Theme = theme_bw() + theme(
         axis.title.x = element_text(size = 12, 
